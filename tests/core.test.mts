@@ -35,3 +35,13 @@ test('読み上げは日本語音声へ代替せず中国本土の音声を優�
   assert.equal(chooseChineseVoice(voices)?.name, 'Mainland local')
   assert.equal(chooseChineseVoice(voices.slice(0, 1)), undefined)
 })
+
+test('アカウントの名前・ピンイン・端末内画像を保存し、外部画像URLを拒否する', () => {
+  const data = emptyData()
+  data.settings.profileName = '理央'
+  data.settings.profilePinyin = 'Lǐ Yāng'
+  data.settings.profileIcon = 'data:image/jpeg;base64,AA=='
+  assertData(data)
+  data.settings.profileIcon = 'https://example.com/profile.jpg'
+  assert.throws(() => assertData(data))
+})

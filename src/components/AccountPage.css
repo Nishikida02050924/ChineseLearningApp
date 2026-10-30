@@ -1,0 +1,74 @@
+.bottom-nav {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.nav-avatar {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 1px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.account-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.account-preview {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 6px;
+  overflow: hidden;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #e7f1e7;
+  box-shadow: 0 4px 18px #334d3b20;
+  color: #315f49;
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+.account-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account-card > .file-button,
+.account-card > button:not(.wide) {
+  align-self: center;
+}
+
+.profile-name-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin: 6px 0;
+  padding: 14px;
+  border-radius: 15px;
+  background: #f5f7f4;
+}
+
+.profile-name-preview strong {
+  font-size: 1.25rem;
+}
+
+.profile-name-preview span {
+  color: #557b69;
+}
+
+@media (max-width: 480px) {
+  .bottom-nav {
+    padding-inline: 5px;
+  }
+
+  .bottom-nav a {
+    font-size: .6rem;
+  }
+}

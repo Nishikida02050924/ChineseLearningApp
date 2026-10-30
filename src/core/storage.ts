@@ -13,6 +13,8 @@ export function assertData(value: unknown): asserts value is AppData {
       !Array.isArray(data.dailyRecords) || !Array.isArray(data.answerCheckpoints) ||
       !data.settings || ![1, 0.75].includes(data.settings.speechRate) ||
       !(data.settings.profileName === undefined || typeof data.settings.profileName === 'string') ||
+      !(data.settings.profilePinyin === undefined || typeof data.settings.profilePinyin === 'string') ||
+      !(data.settings.profileIcon === undefined || (typeof data.settings.profileIcon === 'string' && /^data:image\/(?:jpeg|png|webp);base64,/.test(data.settings.profileIcon) && data.settings.profileIcon.length <= 1_000_000)) ||
       !['newest', 'pinyin', 'mastery'].includes(data.settings.wordSort) ||
       !['newest', 'favorite', 'pinyin'].includes(data.settings.phraseSort) ||
       !data.initialization || typeof data.initialization.verificationAdded !== 'boolean' ||

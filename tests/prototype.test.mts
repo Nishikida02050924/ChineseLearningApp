@@ -150,8 +150,12 @@ test('開始可能時間の境界が仕様どおり', () => {
 
 test('バックアップは往復し、不正形式を拒否する', () => {
   const data = emptyData(); installPrototypeWords(data, INITIAL_DATASET_ID, initialWords)
+  data.settings.profileName = '理央'; data.settings.profilePinyin = 'Lǐ Yāng'; data.settings.profileIcon = 'data:image/jpeg;base64,AA=='
   const restored = parseBackup(JSON.stringify(makeBackup(data)))
   assert.equal(restored.words.length, 250)
   assert.equal(restored.initialization.initialDatasetId, INITIAL_DATASET_ID)
+  assert.equal(restored.settings.profileName, '理央')
+  assert.equal(restored.settings.profilePinyin, 'Lǐ Yāng')
+  assert.equal(restored.settings.profileIcon, 'data:image/jpeg;base64,AA==')
   assert.throws(() => parseBackup('{"hello":"world"}'))
 })
