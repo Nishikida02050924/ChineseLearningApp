@@ -11,11 +11,25 @@ test('初期教材は重複のない200語で全項目と例文を持つ', () =>
   assert.equal(initialWords.length, 200)
   assert.equal(new Set(initialWords.map((word) => word.id)).size, 200)
   assert.equal(new Set(initialWords.map((word) => word.chinese)).size, 200)
+  for (const required of ['我', '名字', '来自', '自我介绍', '聊天', '怎么样', '为什么', '什么', '谁', '哪里', '什么时候']) {
+    assert.ok(initialWords.some((word) => word.chinese === required), `会話用の必須語がありません: ${required}`)
+  }
   for (const word of initialWords) {
     assert(word.chinese && word.pinyin && word.meanings.length && word.genres.length && word.partOfSpeech)
     assert(word.examples.length >= 1)
     assert(word.examples.every((example) => example.chinese && example.pinyin && example.japanese))
   }
+})
+
+test('旧200語を友達との会話・自己紹介版へ安全に更新し、ユーザー語を保持する', () => {
+  const data = emptyData()
+  data.initialization.initialDatasetId = 'starter-200-v1'
+  data.words.push({ ...structuredClone(initialWords[0]), id: 'user-word', chinese: '用户词', source: 'user' })
+  data.words.push({ ...structuredClone(initialWords[1]), id: 'old-initial', source: 'initial' })
+  installPrototypeWords(data, INITIAL_DATASET_ID, initialWords)
+  assert.equal(data.initialization.initialDatasetId, INITIAL_DATASET_ID)
+  assert.ok(data.words.some((word) => word.id === 'user-word'))
+  assert.equal(data.words.filter((word) => word.source === 'initial').length, 200)
 })
 
 test('初期教材は一度だけ入り、02の検証データだけを除く', () => {

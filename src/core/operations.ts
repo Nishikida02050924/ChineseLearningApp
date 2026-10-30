@@ -48,6 +48,15 @@ export function installPrototypeWords(data: AppData, datasetId: string, words: W
   if (data.initialization.initialDatasetId === datasetId) return
   data.words = data.words.filter((word) => word.source !== 'verification')
   data.initialization.verificationAdded = false
+  if (data.initialization.initialDatasetId === 'starter-200-v1' && datasetId === 'starter-200-v2-friends') {
+    const retained = data.words.filter((word) => word.source !== 'initial')
+    if (new Set(words.map((word) => word.id)).size !== words.length || words.some((word) => retained.some((existing) => existing.id === word.id))) {
+      throw new Error('更新データのIDが重複しています。')
+    }
+    data.words = [...retained, ...words]
+    data.initialization.initialDatasetId = datasetId
+    return
+  }
   installInitialWords(data, datasetId, words)
 }
 
