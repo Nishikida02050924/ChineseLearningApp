@@ -17,6 +17,35 @@
   gap: 10px;
 }
 
+.account-status-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-block: 30px;
+}
+
+.account-edit-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  background: #edf5f0;
+  color: #376b60;
+}
+
+.account-edit-button svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
 .account-preview {
   display: grid;
   place-items: center;
@@ -39,28 +68,81 @@
   object-fit: cover;
 }
 
+.account-avatar-editor {
+  position: relative;
+  width: 112px;
+  margin: 0 auto;
+}
+
+.remove-avatar {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: #fff2f0;
+  color: #9b3e35;
+  font-size: 1.1rem;
+}
+
 .account-card > .file-button,
 .account-card > button:not(.wide) {
   align-self: center;
 }
 
-.profile-name-preview {
+.account-identity {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  margin: 6px 0;
-  padding: 14px;
-  border-radius: 15px;
-  background: #f5f7f4;
+  text-align: center;
 }
 
-.profile-name-preview strong {
-  font-size: 1.25rem;
+.account-identity strong {
+  font-size: 1.35rem;
 }
 
-.profile-name-preview span {
+.account-identity span {
   color: #557b69;
+}
+
+.account-identity small {
+  color: #708078;
+}
+
+.account-status-row {
+  display: flex;
+  justify-content: space-between;
+  width: min(100%, 270px);
+  margin-top: 8px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  background: #f4f7f3;
+  color: #607169;
+  font-size: .9rem;
+}
+
+.account-status-row strong {
+  color: #294f45;
+}
+
+.account-rate {
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.account-rate legend {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.account-edit-actions {
+  justify-content: flex-end;
 }
 
 @media (max-width: 480px) {

@@ -30,7 +30,7 @@ export default function PrototypeApp() {
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const { needRefresh: [needRefresh], offlineReady: [offlineReady], updateServiceWorker } = useRegisterSW({ onRegisterError: () => setStatus('オフライン用ファイルを準備できませんでした。オンラインで再度開いてください。') })
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW({ onRegisterError: () => setStatus('オフライン用ファイルを準備できませんでした。オンラインで再度開いてください。') })
   const refresh = useCallback(async () => {
     try {
       let next = await loadData()
@@ -76,8 +76,6 @@ export default function PrototypeApp() {
         <Suspense fallback={<section className="card">画面を読み込んでいます。</section>}>
           {page === 'home' && <Home data={data}/>} {page === 'words' && <WordList data={data} save={save} speak={speak}/>} {page === 'word' && path[1] && <WordDetail data={data} id={path[1]} save={save} speak={speak}/>} {page === 'word-new' && <WordForm data={data} save={save}/>} {page === 'word-edit' && <WordForm data={data} id={path[1]} save={save}/>} {page === 'phrases' && <PhraseList data={data} save={save} speak={speak}/>} {page === 'phrase-new' && <PhraseForm data={data} save={save}/>} {page === 'phrase-edit' && <PhraseForm data={data} id={path[1]} save={save}/>} {page === 'quiz' && <QuizPage data={data} save={save} speak={speak}/>} {page === 'account' && <AccountPage data={data} save={save}/>} {page === 'data' && <DataPage data={data} save={save}/>}
         </Suspense>
-        <section className="card compact-settings"><h2>読み上げ速度</h2><div className="actions"><button aria-pressed={data.settings.speechRate === 1} onClick={() => void save((draft) => { draft.settings.speechRate = 1 }, '通常速度を保存しました。')}>通常 1.0倍</button><button aria-pressed={data.settings.speechRate === .75} onClick={() => void save((draft) => { draft.settings.speechRate = .75 }, 'ゆっくり速度を保存しました。')}>ゆっくり 0.75倍</button></div></section>
-        <footer>データはこの端末のブラウザー内に保存されます。<br/>{offlineReady ? 'オフライン用ファイルの準備ができました。' : '初回のオフライン準備中です。'}</footer>
       </>}
     </main>
     <nav className="bottom-nav" aria-label="メインメニュー">{nav.map((item) => <a href={'#' + item.id} key={item.id} aria-current={page === item.id || (item.id === 'words' && page.startsWith('word')) || (item.id === 'phrases' && page.startsWith('phrase')) ? 'page' : undefined}>{item.id === 'account' && data?.settings.profileIcon ? <img className="nav-avatar" src={data.settings.profileIcon} alt=""/> : <span>{item.mark}</span>}{item.label}</a>)}</nav>
