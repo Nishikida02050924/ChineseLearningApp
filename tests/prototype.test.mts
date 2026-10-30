@@ -37,12 +37,23 @@ test('自己紹介と基本文法のフレーズテンプレートを一度だ�
   assert.equal(initialPhrases.length, 20)
   assert.ok(initialPhrases.some((phrase) => phrase.chinese === '我叫A。'))
   assert.ok(initialPhrases.some((phrase) => phrase.chinese === '因为A，所以B。'))
+  assert.ok(initialPhrases.every((phrase) => phrase.examples?.length === 2))
   const data = emptyData()
   installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
   installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
   assert.equal(data.phrases.length, 20)
   assert.equal(data.initialization.phraseDatasetId, INITIAL_PHRASE_DATASET_ID)
   assertData(data)
+})
+
+test('旧フレーズ教材へ具体例を追加し、編集した本文は保持する', () => {
+  const data = emptyData()
+  data.initialization.phraseDatasetId = 'starter-phrases-v1-introduction'
+  data.phrases.push({ ...structuredClone(initialPhrases[0]), chinese: '編集済みの本文', examples: undefined })
+  installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
+  assert.equal(data.phrases[0].chinese, '編集済みの本文')
+  assert.equal(data.phrases[0].examples?.length, 2)
+  assert.equal(data.initialization.phraseDatasetId, INITIAL_PHRASE_DATASET_ID)
 })
 
 test('初期教材は一度だけ入り、02の検証データだけを除く', () => {

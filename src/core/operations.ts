@@ -62,10 +62,20 @@ export function installPrototypeWords(data: AppData, datasetId: string, words: W
 
 export function installStarterPhrases(data: AppData, datasetId: string, phrases: Phrase[]) {
   if (data.initialization.phraseDatasetId === datasetId) return
-  if (!datasetId || (data.initialization.phraseDatasetId && data.initialization.phraseDatasetId !== datasetId)) {
+  if (!datasetId) {
     throw new Error('別のフレーズ教材が導入済みです。移行手順が必要です。')
   }
   if (new Set(phrases.map((phrase) => phrase.id)).size !== phrases.length) throw new Error('フレーズ教材のIDが重複しています。')
+  if (data.initialization.phraseDatasetId === 'starter-phrases-v1-introduction' && datasetId === 'starter-phrases-v2-examples') {
+    for (const phrase of phrases) {
+      const existing = data.phrases.find((item) => item.id === phrase.id)
+      if (existing) existing.examples = phrase.examples
+      else if (!data.phrases.some((item) => item.chinese.trim() === phrase.chinese.trim())) data.phrases.push(phrase)
+    }
+    data.initialization.phraseDatasetId = datasetId
+    return
+  }
+  if (data.initialization.phraseDatasetId) throw new Error('別のフレーズ教材が導入済みです。移行手順が必要です。')
   const existingTexts = new Set(data.phrases.map((phrase) => phrase.chinese.trim()))
   const additions = phrases.filter((phrase) => !data.phrases.some((existing) => existing.id === phrase.id) && !existingTexts.has(phrase.chinese.trim()))
   data.phrases.push(...additions)

@@ -12,6 +12,7 @@ export function assertData(value: unknown): asserts value is AppData {
       !Array.isArray(data.words) || !Array.isArray(data.phrases) || !Array.isArray(data.masteries) ||
       !Array.isArray(data.dailyRecords) || !Array.isArray(data.answerCheckpoints) ||
       !data.settings || ![1, 0.75].includes(data.settings.speechRate) ||
+      !(data.settings.profileName === undefined || typeof data.settings.profileName === 'string') ||
       !['newest', 'pinyin', 'mastery'].includes(data.settings.wordSort) ||
       !['newest', 'favorite', 'pinyin'].includes(data.settings.phraseSort) ||
       !data.initialization || typeof data.initialization.verificationAdded !== 'boolean' ||
@@ -29,7 +30,8 @@ export function assertData(value: unknown): asserts value is AppData {
     !strings(word.genres) || !Array.isArray(word.examples) || word.examples.some((e) => !text(e) || !id(e.id) || (e.japanese !== undefined && typeof e.japanese !== 'string')) ||
     !unique(word.examples) || !stamp(word.createdAt) || !stamp(word.updatedAt) || (word.partOfSpeech !== undefined && typeof word.partOfSpeech !== 'string') || !['user', 'initial', 'verification'].includes(word.source)) ||
     !unique(data.words) || !unique(data.phrases) ||
-    data.phrases.some((p) => !text(p) || !id(p.id) || !strings(p.genres) || typeof p.favorite !== 'boolean' || !stamp(p.createdAt) || !stamp(p.updatedAt) || (p.japanese !== undefined && typeof p.japanese !== 'string')) ||
+    data.phrases.some((p) => !text(p) || !id(p.id) || !strings(p.genres) || typeof p.favorite !== 'boolean' || !stamp(p.createdAt) || !stamp(p.updatedAt) || (p.japanese !== undefined && typeof p.japanese !== 'string') ||
+      (p.examples !== undefined && (!Array.isArray(p.examples) || p.examples.some((e) => !text(e) || !id(e.id) || (e.japanese !== undefined && typeof e.japanese !== 'string')) || !unique(p.examples)))) ||
     data.masteries.some((m) => !m || !id(m.key) || ![m['ja-zh'], m['zh-ja']].every((n) => Number.isFinite(n) && n >= 0 && n <= 100)) ||
     new Set(data.masteries.map((m) => m.key)).size !== data.masteries.length ||
     data.answerCheckpoints.some((c) => !c || !id(c.sessionId) || !Number.isSafeInteger(c.sequence) || c.sequence < 1) ||

@@ -19,6 +19,7 @@ export interface Word extends ChineseText {
 export interface Phrase extends ChineseText {
   id: string
   japanese?: string
+  examples?: Example[]
   genres: string[]
   favorite: boolean
   createdAt: string
@@ -41,13 +42,13 @@ export interface AppData {
   masteries: Mastery[]
   dailyRecords: DailyRecord[]
   answerCheckpoints: { sessionId: string; sequence: number }[]
-  settings: { wordSort: SortOrder; phraseSort: 'newest' | 'favorite' | 'pinyin'; speechRate: 1 | 0.75 }
+  settings: { wordSort: SortOrder; phraseSort: 'newest' | 'favorite' | 'pinyin'; speechRate: 1 | 0.75; profileName?: string }
   initialization: { initialDatasetId: string | null; phraseDatasetId?: string | null; verificationAdded: boolean }
 }
 export function emptyData(): AppData {
   return {
     schemaVersion: 1, revision: 0, words: [], phrases: [], masteries: [], dailyRecords: [], answerCheckpoints: [],
-    settings: { wordSort: 'newest', phraseSort: 'newest', speechRate: 1 },
+    settings: { wordSort: 'newest', phraseSort: 'newest', speechRate: 1, profileName: '' },
     initialization: { initialDatasetId: null, phraseDatasetId: null, verificationAdded: false },
   }
 }

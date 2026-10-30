@@ -18,7 +18,10 @@ const PhraseList = lazy(() => phrasePages().then((module) => ({ default: module.
 const PhraseForm = lazy(() => phrasePages().then((module) => ({ default: module.PhraseForm })))
 
 const nav = [{ id: 'home', label: 'ホーム', mark: '⌂' }, { id: 'words', label: '単語帳', mark: '字' }, { id: 'phrases', label: 'フレーズ帳', mark: '話' }, { id: 'quiz', label: 'クイズ', mark: '✓' }]
-const route = () => (location.hash.replace(/^#/, '') || 'home').split('/')
+const route = () => {
+  const path = (location.hash.replace(/^#/, '') || 'home').split('/')
+  return path[0] === 'phrase' ? ['phrases', ...path.slice(1)] : path
+}
 
 export default function PrototypeApp() {
   const [path, setPath] = useState(route)
