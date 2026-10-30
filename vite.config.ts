@@ -12,7 +12,12 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['apple-touch-icon.png'],
-      workbox: { skipWaiting: true, clientsClaim: true },
+      workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
+        globIgnores: ['**/demo/**'],
+        navigateFallbackDenylist: [/\/demo\//],
+      },
       manifest: {
         name: '中国語学習アプリ',
         short_name: '中国語学習',
