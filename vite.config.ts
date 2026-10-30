@@ -10,8 +10,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['apple-touch-icon.png'],
+      workbox: { skipWaiting: true, clientsClaim: true },
       manifest: {
         name: '中国語学習アプリ',
         short_name: '中国語学習',

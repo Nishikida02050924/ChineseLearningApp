@@ -30,8 +30,8 @@ export default function PrototypeApp() {
   const refresh = useCallback(async () => {
     try {
       let next = await loadData()
-      if (!next.initialization.initialDatasetId) {
-        const { INITIAL_DATASET_ID, initialWords } = await import('./data/initialWords.ts')
+      const { INITIAL_DATASET_ID, initialWords } = await import('./data/initialWords.ts')
+      if (next.initialization.initialDatasetId !== INITIAL_DATASET_ID) {
         next = await transact((draft) => installPrototypeWords(draft, INITIAL_DATASET_ID, initialWords))
       }
       setData((current) => !current || next.revision >= current.revision ? next : current); setError('')
