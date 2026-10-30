@@ -48,12 +48,27 @@ export function installPrototypeWords(data: AppData, datasetId: string, words: W
   if (data.initialization.initialDatasetId === datasetId) return
   data.words = data.words.filter((word) => word.source !== 'verification')
   data.initialization.verificationAdded = false
-  if (data.initialization.initialDatasetId === 'starter-200-v1' && datasetId === 'starter-200-v2-friends') {
+  if (data.initialization.initialDatasetId === 'starter-200-v1' && ['starter-200-v2-friends', 'starter-250-v3-basics-time'].includes(datasetId)) {
     const retained = data.words.filter((word) => word.source !== 'initial')
     if (new Set(words.map((word) => word.id)).size !== words.length || words.some((word) => retained.some((existing) => existing.id === word.id))) {
       throw new Error('更新データのIDが重複しています。')
     }
     data.words = [...retained, ...words]
+    data.initialization.initialDatasetId = datasetId
+    return
+  }
+  if (data.initialization.initialDatasetId === 'starter-200-v2-friends' && datasetId === 'starter-250-v3-basics-time') {
+    for (const word of words) {
+      const existing = data.words.find((item) => item.id === word.id)
+      if (existing) {
+        if (existing.chinese.trim() === word.chinese.trim()) {
+          const exampleTexts = new Set(existing.examples.map((example) => example.chinese.trim()))
+          existing.examples.push(...word.examples.filter((example) => !exampleTexts.has(example.chinese.trim())))
+        }
+        continue
+      }
+      if (!data.words.some((item) => item.chinese.trim() === word.chinese.trim())) data.words.push(word)
+    }
     data.initialization.initialDatasetId = datasetId
     return
   }
@@ -66,7 +81,7 @@ export function installStarterPhrases(data: AppData, datasetId: string, phrases:
     throw new Error('別のフレーズ教材が導入済みです。移行手順が必要です。')
   }
   if (new Set(phrases.map((phrase) => phrase.id)).size !== phrases.length) throw new Error('フレーズ教材のIDが重複しています。')
-  if (['starter-phrases-v1-introduction', 'starter-phrases-v2-examples'].includes(data.initialization.phraseDatasetId ?? '') && datasetId === 'starter-phrases-v3-greetings') {
+  if (['starter-phrases-v1-introduction', 'starter-phrases-v2-examples', 'starter-phrases-v3-greetings'].includes(data.initialization.phraseDatasetId ?? '') && datasetId === 'starter-phrases-v4-daily-verbs') {
     for (const phrase of phrases) {
       const existing = data.phrases.find((item) => item.id === phrase.id)
       if (existing) {

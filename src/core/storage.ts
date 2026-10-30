@@ -27,11 +27,11 @@ export function assertData(value: unknown): asserts value is AppData {
   const id = (s: unknown) => typeof s === 'string' && !!s
   const unique = (items: { id: string }[]) => new Set(items.map((item) => item.id)).size === items.length
   if (data.words.some((word) => !text(word) || !id(word.id) || !strings(word.meanings) || !word.meanings.length ||
-    !strings(word.genres) || !Array.isArray(word.examples) || word.examples.some((e) => !text(e) || !id(e.id) || (e.japanese !== undefined && typeof e.japanese !== 'string')) ||
+    !strings(word.genres) || !Array.isArray(word.examples) || word.examples.some((e) => !text(e) || !id(e.id) || (e.japanese !== undefined && typeof e.japanese !== 'string') || (e.usage !== undefined && !['affirmative', 'negative'].includes(e.usage))) ||
     !unique(word.examples) || !stamp(word.createdAt) || !stamp(word.updatedAt) || (word.partOfSpeech !== undefined && typeof word.partOfSpeech !== 'string') || !['user', 'initial', 'verification'].includes(word.source)) ||
     !unique(data.words) || !unique(data.phrases) ||
     data.phrases.some((p) => !text(p) || !id(p.id) || !strings(p.genres) || typeof p.favorite !== 'boolean' || !stamp(p.createdAt) || !stamp(p.updatedAt) || (p.japanese !== undefined && typeof p.japanese !== 'string') ||
-      (p.examples !== undefined && (!Array.isArray(p.examples) || p.examples.some((e) => !text(e) || !id(e.id) || (e.japanese !== undefined && typeof e.japanese !== 'string')) || !unique(p.examples)))) ||
+      (p.examples !== undefined && (!Array.isArray(p.examples) || p.examples.some((e) => !text(e) || !id(e.id) || (e.japanese !== undefined && typeof e.japanese !== 'string') || (e.usage !== undefined && !['affirmative', 'negative'].includes(e.usage))) || !unique(p.examples)))) ||
     data.masteries.some((m) => !m || !id(m.key) || ![m['ja-zh'], m['zh-ja']].every((n) => Number.isFinite(n) && n >= 0 && n <= 100)) ||
     new Set(data.masteries.map((m) => m.key)).size !== data.masteries.length ||
     data.answerCheckpoints.some((c) => !c || !id(c.sessionId) || !Number.isSafeInteger(c.sequence) || c.sequence < 1) ||

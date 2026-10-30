@@ -35,10 +35,11 @@ const rows: PhraseRow[] = [
   ['晚安！', 'おやすみ！', ['挨拶', '友達との会話'], [['时间不早了，晚安！', 'もう遅いね、おやすみ！'], ['晚安，做个好梦！', 'おやすみ、いい夢を！']]],
   ['拜拜！', 'バイバイ！', ['挨拶', '友達との会話'], [['我先走了，拜拜！', '先に帰るね、バイバイ！'], ['下次见，拜拜！', 'また今度、バイバイ！']]],
   ['路上小心！', '帰り道、気をつけて！', ['挨拶', '友達との会話'], [['天黑了，路上小心！', '暗くなったから、帰り道気をつけて！'], ['你也路上小心！', 'あなたも気をつけて帰ってね！']]],
+  ['我吃饭。', '私はご飯を食べます。', ['食事', '基本動詞'], [['我每天在学校吃饭。', '私は毎日学校でご飯を食べます。'], ['我还没吃饭。', '私はまだご飯を食べていません。']]],
 ]
 
 const createdAt = '2026-10-30T00:00:00.000Z'
-export const INITIAL_PHRASE_DATASET_ID = 'starter-phrases-v3-greetings'
+export const INITIAL_PHRASE_DATASET_ID = 'starter-phrases-v4-daily-verbs'
 export const initialPhrases: Phrase[] = rows.map(([chinese, japanese, genres, examples], index) => ({
   id: `initial-phrase-${String(index + 1).padStart(3, '0')}`,
   chinese,

@@ -5,7 +5,7 @@ export interface ChineseText {
   pinyin: string
   pinyinSource: 'auto' | 'manual'
 }
-export interface Example extends ChineseText { id: string; japanese?: string }
+export interface Example extends ChineseText { id: string; japanese?: string; usage?: 'affirmative' | 'negative' }
 export interface Word extends ChineseText {
   id: string
   meanings: string[]
