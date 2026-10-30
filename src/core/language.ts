@@ -33,10 +33,8 @@ export function speakChinese(text: string, rate: 1 | 0.75, report: (message: str
     utterance.voice = voice
     utterance.rate = rate
     utterance.onerror = (event) => { if (!['interrupted', 'canceled'].includes(event.error)) report('中国語音声を再生できませんでした。端末の音量と音声設定を確認してください。') }
-    utterance.onend = () => report('読み上げが終了しました。')
     engine.cancel()
     engine.speak(utterance)
-    report(`中国語音声「${voice.name}」で読み上げ中です。`)
   }
 
   const tryPlay = () => {
@@ -50,7 +48,6 @@ export function speakChinese(text: string, rate: 1 | 0.75, report: (message: str
   const onVoicesChanged = () => { void tryPlay() }
 
   if (!tryPlay()) {
-    report('中国語音声を読み込んでいます…')
     engine.addEventListener('voiceschanged', onVoicesChanged)
     timeout = window.setTimeout(() => {
       engine.removeEventListener('voiceschanged', onVoicesChanged)
