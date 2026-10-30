@@ -15,7 +15,8 @@ export function assertData(value: unknown): asserts value is AppData {
       !['newest', 'pinyin', 'mastery'].includes(data.settings.wordSort) ||
       !['newest', 'favorite', 'pinyin'].includes(data.settings.phraseSort) ||
       !data.initialization || typeof data.initialization.verificationAdded !== 'boolean' ||
-      !(data.initialization.initialDatasetId === null || typeof data.initialization.initialDatasetId === 'string')) {
+      !(data.initialization.initialDatasetId === null || typeof data.initialization.initialDatasetId === 'string') ||
+      !(data.initialization.phraseDatasetId === undefined || data.initialization.phraseDatasetId === null || typeof data.initialization.phraseDatasetId === 'string')) {
     throw new Error('保存データの形式を確認できません。既存データは保持しています。')
   }
   const text = (item: { chinese: string; pinyin: string; pinyinSource: string }) => item &&

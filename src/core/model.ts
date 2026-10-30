@@ -42,13 +42,13 @@ export interface AppData {
   dailyRecords: DailyRecord[]
   answerCheckpoints: { sessionId: string; sequence: number }[]
   settings: { wordSort: SortOrder; phraseSort: 'newest' | 'favorite' | 'pinyin'; speechRate: 1 | 0.75 }
-  initialization: { initialDatasetId: string | null; verificationAdded: boolean }
+  initialization: { initialDatasetId: string | null; phraseDatasetId?: string | null; verificationAdded: boolean }
 }
 export function emptyData(): AppData {
   return {
     schemaVersion: 1, revision: 0, words: [], phrases: [], masteries: [], dailyRecords: [], answerCheckpoints: [],
     settings: { wordSort: 'newest', phraseSort: 'newest', speechRate: 1 },
-    initialization: { initialDatasetId: null, verificationAdded: false },
+    initialization: { initialDatasetId: null, phraseDatasetId: null, verificationAdded: false },
   }
 }
 // Chinese spelling is kept exact except for surrounding whitespace and canonical Unicode.

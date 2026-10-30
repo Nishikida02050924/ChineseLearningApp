@@ -1,8 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialWords, INITIAL_DATASET_ID } from '../src/data/initialWords.ts'
+import { initialPhrases, INITIAL_PHRASE_DATASET_ID } from '../src/data/initialPhrases.ts'
 import { emptyData, masteryKey } from '../src/core/model.ts'
-import { installPrototypeWords } from '../src/core/operations.ts'
+import { installPrototypeWords, installStarterPhrases } from '../src/core/operations.ts'
 import { dailyQuestions, makeQuestion, quizAvailability } from '../src/core/quiz.ts'
 import { makeBackup, parseBackup } from '../src/core/backup.ts'
 import { assertData } from '../src/core/storage.ts'
@@ -30,6 +31,18 @@ test('旧200語を友達との会話・自己紹介版へ安全に更新し、�
   assert.equal(data.initialization.initialDatasetId, INITIAL_DATASET_ID)
   assert.ok(data.words.some((word) => word.id === 'user-word'))
   assert.equal(data.words.filter((word) => word.source === 'initial').length, 200)
+})
+
+test('自己紹介と基本文法のフレーズテンプレートを一度だけ追加する', () => {
+  assert.equal(initialPhrases.length, 20)
+  assert.ok(initialPhrases.some((phrase) => phrase.chinese === '我叫A。'))
+  assert.ok(initialPhrases.some((phrase) => phrase.chinese === '因为A，所以B。'))
+  const data = emptyData()
+  installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
+  installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
+  assert.equal(data.phrases.length, 20)
+  assert.equal(data.initialization.phraseDatasetId, INITIAL_PHRASE_DATASET_ID)
+  assertData(data)
 })
 
 test('初期教材は一度だけ入り、02の検証データだけを除く', () => {

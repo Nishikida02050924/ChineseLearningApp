@@ -5,7 +5,7 @@ import { LearningCalendar } from './components/Calendar.tsx'
 import { QuizPage } from './components/QuizPage.tsx'
 import type { AppData } from './core/model.ts'
 import { speakChinese } from './core/language.ts'
-import { installPrototypeWords } from './core/operations.ts'
+import { installPrototypeWords, installStarterPhrases } from './core/operations.ts'
 import { loadData, storageMessage, transact } from './core/storage.ts'
 import './PrototypeApp.css'
 
@@ -31,8 +31,12 @@ export default function PrototypeApp() {
     try {
       let next = await loadData()
       const { INITIAL_DATASET_ID, initialWords } = await import('./data/initialWords.ts')
-      if (next.initialization.initialDatasetId !== INITIAL_DATASET_ID) {
-        next = await transact((draft) => installPrototypeWords(draft, INITIAL_DATASET_ID, initialWords))
+      const { INITIAL_PHRASE_DATASET_ID, initialPhrases } = await import('./data/initialPhrases.ts')
+      if (next.initialization.initialDatasetId !== INITIAL_DATASET_ID || next.initialization.phraseDatasetId !== INITIAL_PHRASE_DATASET_ID) {
+        next = await transact((draft) => {
+          installPrototypeWords(draft, INITIAL_DATASET_ID, initialWords)
+          installStarterPhrases(draft, INITIAL_PHRASE_DATASET_ID, initialPhrases)
+        })
       }
       setData((current) => !current || next.revision >= current.revision ? next : current); setError('')
     } catch (cause) { setError(storageMessage(cause)) }

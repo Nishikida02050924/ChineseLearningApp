@@ -1,5 +1,5 @@
 import { masteryKey, masteryFor } from './model.ts'
-import type { Answer, AppData, DailyRecord, Word } from './model.ts'
+import type { Answer, AppData, DailyRecord, Phrase, Word } from './model.ts'
 
 function applyAnswer(data: AppData, answer: Answer) {
   if (!['ja-zh', 'zh-ja'].includes(answer.direction) || typeof answer.correct !== 'boolean' ||
@@ -58,6 +58,18 @@ export function installPrototypeWords(data: AppData, datasetId: string, words: W
     return
   }
   installInitialWords(data, datasetId, words)
+}
+
+export function installStarterPhrases(data: AppData, datasetId: string, phrases: Phrase[]) {
+  if (data.initialization.phraseDatasetId === datasetId) return
+  if (!datasetId || (data.initialization.phraseDatasetId && data.initialization.phraseDatasetId !== datasetId)) {
+    throw new Error('別のフレーズ教材が導入済みです。移行手順が必要です。')
+  }
+  if (new Set(phrases.map((phrase) => phrase.id)).size !== phrases.length) throw new Error('フレーズ教材のIDが重複しています。')
+  const existingTexts = new Set(data.phrases.map((phrase) => phrase.chinese.trim()))
+  const additions = phrases.filter((phrase) => !data.phrases.some((existing) => existing.id === phrase.id) && !existingTexts.has(phrase.chinese.trim()))
+  data.phrases.push(...additions)
+  data.initialization.phraseDatasetId = datasetId
 }
 
 export function addVerificationWord(data: AppData) {
