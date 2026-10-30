@@ -66,11 +66,14 @@ export function installStarterPhrases(data: AppData, datasetId: string, phrases:
     throw new Error('別のフレーズ教材が導入済みです。移行手順が必要です。')
   }
   if (new Set(phrases.map((phrase) => phrase.id)).size !== phrases.length) throw new Error('フレーズ教材のIDが重複しています。')
-  if (data.initialization.phraseDatasetId === 'starter-phrases-v1-introduction' && datasetId === 'starter-phrases-v2-examples') {
+  if (['starter-phrases-v1-introduction', 'starter-phrases-v2-examples'].includes(data.initialization.phraseDatasetId ?? '') && datasetId === 'starter-phrases-v3-greetings') {
     for (const phrase of phrases) {
       const existing = data.phrases.find((item) => item.id === phrase.id)
-      if (existing) existing.examples = phrase.examples
-      else if (!data.phrases.some((item) => item.chinese.trim() === phrase.chinese.trim())) data.phrases.push(phrase)
+      if (existing) {
+        if (data.initialization.phraseDatasetId === 'starter-phrases-v1-introduction') existing.examples = phrase.examples
+        continue
+      }
+      if (!data.phrases.some((item) => item.chinese.trim() === phrase.chinese.trim())) data.phrases.push(phrase)
     }
     data.initialization.phraseDatasetId = datasetId
     return

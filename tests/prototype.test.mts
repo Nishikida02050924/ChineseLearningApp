@@ -34,14 +34,15 @@ test('旧200語を友達との会話・自己紹介版へ安全に更新し、�
 })
 
 test('自己紹介と基本文法のフレーズテンプレートを一度だけ追加する', () => {
-  assert.equal(initialPhrases.length, 20)
+  assert.equal(initialPhrases.length, 30)
   assert.ok(initialPhrases.some((phrase) => phrase.chinese === '我叫A。'))
   assert.ok(initialPhrases.some((phrase) => phrase.chinese === '因为A，所以B。'))
+  assert.ok(initialPhrases.some((phrase) => phrase.chinese === '好久不见！' && phrase.genres.includes('挨拶')))
   assert.ok(initialPhrases.every((phrase) => phrase.examples?.length === 2))
   const data = emptyData()
   installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
   installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
-  assert.equal(data.phrases.length, 20)
+  assert.equal(data.phrases.length, 30)
   assert.equal(data.initialization.phraseDatasetId, INITIAL_PHRASE_DATASET_ID)
   assertData(data)
 })
@@ -53,6 +54,22 @@ test('旧フレーズ教材へ具体例を追加し、編集した本文は保�
   installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
   assert.equal(data.phrases[0].chinese, '編集済みの本文')
   assert.equal(data.phrases[0].examples?.length, 2)
+  assert.equal(data.initialization.phraseDatasetId, INITIAL_PHRASE_DATASET_ID)
+})
+
+test('例文版から挨拶版へ更新し、既存の編集とお気に入りを保持する', () => {
+  const data = emptyData()
+  data.initialization.phraseDatasetId = 'starter-phrases-v2-examples'
+  data.phrases.push(...structuredClone(initialPhrases.slice(0, 20)))
+  data.phrases[0].chinese = '編集した本文'
+  data.phrases[0].japanese = '編集した訳'
+  data.phrases[0].favorite = true
+  installStarterPhrases(data, INITIAL_PHRASE_DATASET_ID, initialPhrases)
+  assert.equal(data.phrases.length, 30)
+  assert.equal(data.phrases[0].chinese, '編集した本文')
+  assert.equal(data.phrases[0].japanese, '編集した訳')
+  assert.equal(data.phrases[0].favorite, true)
+  assert.ok(data.phrases.some((phrase) => phrase.chinese === '晚安！'))
   assert.equal(data.initialization.phraseDatasetId, INITIAL_PHRASE_DATASET_ID)
 })
 

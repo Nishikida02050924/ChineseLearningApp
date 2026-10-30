@@ -12,18 +12,24 @@ const emptyExample = (): Example => ({ id: crypto.randomUUID(), chinese: '', pin
 export function WordList({ data, save, speak }: { data: AppData; save: Save; speak: Speak }) {
   const [query, setQuery] = useState('')
   const [selectedGenres, setSelectedGenres] = useState<string[]>([])
+  const [selectedPartsOfSpeech, setSelectedPartsOfSpeech] = useState<string[]>([])
   const genres = useMemo(() => [...new Set(data.words.flatMap((word) => word.genres))].sort((a, b) => a.localeCompare(b, 'ja')), [data.words])
-  const words = data.words.filter((word) => matchesSearch(query, [word.chinese, word.pinyin, ...word.meanings]) && (!selectedGenres.length || selectedGenres.some((genre) => genre === 'ジャンルなし' ? !word.genres.length : word.genres.includes(genre))))
+  const partsOfSpeech = useMemo(() => [...new Set(data.words.map((word) => word.partOfSpeech).filter((value): value is string => !!value))].sort((a, b) => a.localeCompare(b, 'ja')), [data.words])
+  const words = data.words.filter((word) => matchesSearch(query, [word.chinese, word.pinyin, ...word.meanings])
+    && (!selectedGenres.length || selectedGenres.some((genre) => genre === 'ジャンルなし' ? !word.genres.length : word.genres.includes(genre)))
+    && (!selectedPartsOfSpeech.length || selectedPartsOfSpeech.includes(word.partOfSpeech ?? '')))
     .sort((a, b) => data.settings.wordSort === 'newest' ? b.createdAt.localeCompare(a.createdAt) : data.settings.wordSort === 'pinyin' ? a.pinyin.localeCompare(b.pinyin) : overallMastery(masteryFor(data, a.chinese)) - overallMastery(masteryFor(data, b.chinese)))
-  const toggle = (genre: string) => setSelectedGenres((current) => current.includes(genre) ? current.filter((item) => item !== genre) : [...current, genre])
+  const toggleGenre = (genre: string) => setSelectedGenres((current) => current.includes(genre) ? current.filter((item) => item !== genre) : [...current, genre])
+  const togglePartOfSpeech = (partOfSpeech: string) => setSelectedPartsOfSpeech((current) => current.includes(partOfSpeech) ? current.filter((item) => item !== partOfSpeech) : [...current, partOfSpeech])
   return <>
     <div className="page-heading"><div><p className="eyebrow">WORDS</p><h1>単語帳</h1><p>{data.words.length}語を保存中</p></div><a className="primary-button" href="#word-new">＋ 単語を追加</a></div>
     <section className="card filters"><label htmlFor="word-search">中国語・日本語・ピンインで検索</label><input id="word-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="例：你好 / ni hao" />
       <label htmlFor="word-sort">並び順</label><select id="word-sort" value={data.settings.wordSort} onChange={(e) => void save((draft) => { draft.settings.wordSort = e.target.value as AppData['settings']['wordSort'] }, '並び順を保存しました。')}><option value="newest">登録が新しい順</option><option value="pinyin">ピンイン順</option><option value="mastery">暗記度が低い順</option></select>
-      <div className="chips">{[...genres, 'ジャンルなし'].map((genre) => <button type="button" className="chip" aria-pressed={selectedGenres.includes(genre)} key={genre} onClick={() => toggle(genre)}>{genre}</button>)}</div>
+      <span className="muted">ジャンル</span><div className="chips">{[...genres, 'ジャンルなし'].map((genre) => <button type="button" className="chip" aria-pressed={selectedGenres.includes(genre)} key={genre} onClick={() => toggleGenre(genre)}>{genre}</button>)}</div>
+      <span className="muted">品詞</span><div className="chips">{partsOfSpeech.map((partOfSpeech) => <button type="button" className="chip" aria-pressed={selectedPartsOfSpeech.includes(partOfSpeech)} key={partOfSpeech} onClick={() => togglePartOfSpeech(partOfSpeech)}>{partOfSpeech}</button>)}</div>
     </section>
     <p className="result-count">{words.length}件</p>
-    {words.map((word) => { const mastery = masteryFor(data, word.chinese); return <article className="card word-card" key={word.id}><div className="card-row"><button className="text-card-button" onClick={() => { location.hash = `word/${word.id}` }}><h2 lang="zh-CN">{word.chinese}</h2><p className="pinyin">{word.pinyin}</p>{word.meanings.map((meaning) => <p key={meaning}>{meaning}</p>)}</button><button className="icon-button" aria-label={`${word.chinese}を読み上げる`} onClick={() => speak(word.chinese)}>🔊</button></div><div className="chips">{word.genres.map((genre) => <span className="tag" key={genre}>{genre}</span>)}</div><div className="mastery"><span>日→中 {mastery['ja-zh']}%</span><span>中→日 {mastery['zh-ja']}%</span><strong>総合 {overallMastery(mastery)}%</strong></div></article> })}
+    {words.map((word) => { const mastery = masteryFor(data, word.chinese); return <article className="card word-card" key={word.id}><div className="card-row"><button className="text-card-button" onClick={() => { location.hash = `word/${word.id}` }}><h2 lang="zh-CN">{word.chinese}</h2><p className="pinyin">{word.pinyin}</p>{word.meanings.map((meaning) => <p key={meaning}>{meaning}</p>)}</button><button className="icon-button" aria-label={`${word.chinese}を読み上げる`} onClick={() => speak(word.chinese)}>🔊</button></div><div className="chips">{word.genres.map((genre) => <span className="tag" key={genre}>{genre}</span>)}{word.partOfSpeech && <span className="tag neutral">{word.partOfSpeech}</span>}</div><div className="mastery"><span>日→中 {mastery['ja-zh']}%</span><span>中→日 {mastery['zh-ja']}%</span><strong>総合 {overallMastery(mastery)}%</strong></div></article> })}
     {!words.length && <section className="card empty"><h2>該当する単語がありません</h2><p>検索語やジャンルを変えてください。</p></section>}
   </>
 }
